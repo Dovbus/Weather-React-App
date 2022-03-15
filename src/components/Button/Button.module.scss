@@ -1,0 +1,12 @@
+.button {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+  cursor: pointer;
+  &:hover {
+    color: #645edb;
+    border-color: #645edb;
+  }
+}
