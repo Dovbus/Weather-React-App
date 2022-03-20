@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export default function useFetch(BaseUrl) {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   function get(url) {
     return new Promise((resolve, reject) => {
+      setLoading(true);
       fetch(BaseUrl + url)
         .then((response) => response.json())
         .then((data) => {

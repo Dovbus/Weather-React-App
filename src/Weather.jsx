@@ -8,6 +8,7 @@ import AddedLocations from './components/AddedLocations/AddedLocations';
 import TabsNav from './components/TabsNav/TabsNav';
 import WeatherDetails from './components/WeatherDetails/WeatherDetails';
 import WeatherForecast from './components/WeatherForecast/WeatherForecast';
+import Loader from './components/Loader/Loader';
 
 import HeartSvg from './img/heart-icon.svg';
 import LikedSvg from './img/heart-icon-liked.svg';
@@ -32,6 +33,24 @@ function Weather() {
     setCity(e.target.value);
   }
 
+  function fetchCityWeather(value) {
+    get(`weather?q=${value}&appid=${context.API_KEY}&units=metric`)
+      .then((data) => {
+        if (data) {
+          context.setWeatherData({
+            cityName: data.name,
+            cityTemperature: Math.round(data.main.temp),
+            icon: data.weather[0].icon,
+            feelsLike: Math.round(data.main.feels_like),
+            weather: data.weather[0].main,
+            sunrise: data.sys.sunrise,
+            sunset: data.sys.sunset,
+          });
+        }
+      })
+      .catch((error) => console.log(error));
+  }
+
   function fetchWeatherForecast() {
     get(`forecast?q=${city}&appid=${context.API_KEY}&units=metric`)
       .then((data) => {
@@ -51,7 +70,7 @@ function Weather() {
     }
     setValidation('');
 
-    context.fetchCityWeather(city);
+    fetchCityWeather(city);
     setImgUrl(HeartSvg);
   }
 
@@ -97,6 +116,7 @@ function Weather() {
               onCityChange={handleCityChange}
               validation={validation}
             />
+            {loading && <Loader />}
             <DateComponent />
           </div>
           {validation && <div className="error">{validation}</div>}
@@ -133,7 +153,7 @@ function Weather() {
               onCityChange={setCity}
               favorites={favorites}
               onDelete={handleDeleteClick}
-              onFetch={context.fetchCityWeather}
+              onFetch={fetchCityWeather}
             />
           </div>
         </div>
