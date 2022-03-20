@@ -13,18 +13,38 @@
     &::placeholder {
       color: #6f4849;
       letter-spacing: 0.7px;
+      font-size: 13px;
+    }
+    @media (max-width: 700px) {
+      width: 305px;
+    }
+    @media (max-width: 500px) {
+      width: 205px;
+      height: 28px;
     }
   }
   &__button {
     border: none;
     cursor: pointer;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     background-color: #ccd9e2;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     margin-left: -40px;
     border-radius: 50%;
+    @media (max-width: 500px) {
+      width: 24px;
+      height: 24px;
+    }
+  }
+  &__img {
+    width: 24px;
+    height: 24px;
+    @media (max-width: 500px) {
+      width: 18px;
+      height: 18px;
+    }
   }
 }

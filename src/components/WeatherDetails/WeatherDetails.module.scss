@@ -1,0 +1,50 @@
+.tab {
+  max-height: 270px;
+  display: block;
+  &__city {
+    margin: 15px 0 15px 20px;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    line-height: 30px;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    @media (max-width: 700px) {
+      margin: 10px 0 10px 20px;
+    }
+  }
+  &__cityList {
+    margin-left: 20px;
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+
+    span {
+      text-transform: uppercase;
+      font-weight: 700;
+      font-size: 15px;
+      @media (max-width: 500px) {
+        font-size: 14px;
+      }
+    }
+    @media (max-width: 700px) {
+      margin-bottom: 33px;
+    }
+    @media (max-width: 500px) {
+      margin-bottom: 32px;
+    }
+  }
+  &__cityItem {
+    border-bottom: 2px solid #6f4849;
+    padding: 5px 5px 5px 15px;
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      left: -4px;
+      top: 17px;
+      background-image: url('../../img/romb.svg');
+    }
+  }
+}
