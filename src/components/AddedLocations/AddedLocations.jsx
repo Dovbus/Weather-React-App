@@ -2,7 +2,7 @@ import styles from './AddedLocations.module.scss';
 import clsx from 'clsx';
 
 function AddedLocations(props) {
-  const { city, onCityChange, onFetch, favorites, onDelete } = props;
+  const { onCityChange, onFetch, favorites, onDelete } = props;
 
   const classes = clsx(styles.location, styles.itemRightSide);
   const listClasses = clsx(styles.itemRightSide__bottom, styles.itemLocation);

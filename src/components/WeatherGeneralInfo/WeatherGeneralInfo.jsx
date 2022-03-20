@@ -1,3 +1,6 @@
+import React, { useContext } from 'react';
+import { AppContext } from '../AppContext';
+
 import styles from './WeatherGeneralInfo.module.scss';
 import CloudSvg from '../../img/cloud-forecast.svg';
 import d01 from '../../img/nows/01d.svg';
@@ -14,7 +17,8 @@ import d13 from '../../img/nows/13d.svg';
 import d50 from '../../img/nows/50d.svg';
 
 function WeatherGeneralInfo(props) {
-  const { weatherData, onFavoriteAdd, heartIcon } = props;
+  const { onFavoriteAdd, heartIcon } = props;
+  const context = useContext(AppContext);
 
   function chooseImgSrc(data) {
     let imgUrl;
@@ -72,21 +76,23 @@ function WeatherGeneralInfo(props) {
       <div className={styles.item__column}>
         <div className={styles.item__degrees}>
           <h2 className={styles.degrees}>
-            {weatherData.cityTemperature
-              ? `${weatherData.cityTemperature}°`
+            {context.weatherData.cityTemperature
+              ? `${context.weatherData.cityTemperature}°`
               : '14°'}
           </h2>
         </div>
         <div className={styles.item__weather}>
           <img
             className={styles.cloud}
-            src={chooseImgSrc(weatherData.icon)}
+            src={chooseImgSrc(context.weatherData.icon)}
             alt="icon-cloud"
           />
         </div>
         <div className={styles.itemRow}>
           <p className={styles.itemRow__text}>
-            {weatherData.cityName ? weatherData.cityName : 'Unknown'}
+            {context.weatherData.cityName
+              ? context.weatherData.cityName
+              : 'Unknown'}
           </p>
           <button className={styles.likedButton} onClick={onFavoriteAdd}>
             <img

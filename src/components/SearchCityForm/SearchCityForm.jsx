@@ -1,19 +1,25 @@
 import React, { useRef, useEffect } from 'react';
+
+import clsx from 'clsx';
 import styles from './SearchCityForm.module.scss';
 import image from '../../img/search-icon.svg';
 
 export default function SearchCityForm(props) {
-  const { onFormSubmit, city, onCityChange } = props;
+  const { onFormSubmit, city, onCityChange, validation } = props;
   const inputRef = useRef(null);
 
   useEffect(() => {
     inputRef.current.focus();
   }, []);
 
+  const classes = clsx(styles.form__input, {
+    [styles.error]: validation !== '',
+  });
+
   return (
     <form className={styles.form} action="#" onSubmit={onFormSubmit}>
       <input
-        className={styles.form__input}
+        className={classes}
         type="text"
         name="city"
         placeholder="Search a new city..."

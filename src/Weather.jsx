@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AppContext, AppProvider } from './components/AppContext';
 import useFetch from './components/useFetch.hook';
 import SearchCityForm from './components/SearchCityForm/SearchCityForm';
 import DateComponent from './components/DateComponent/DateComponent';
@@ -11,9 +12,9 @@ import WeatherForecast from './components/WeatherForecast/WeatherForecast';
 import HeartSvg from './img/heart-icon.svg';
 import LikedSvg from './img/heart-icon-liked.svg';
 
-export default function Weather() {
+function Weather() {
+  const context = useContext(AppContext);
   const [city, setCity] = useState('');
-  const [weatherData, setWeatherData] = useState({});
   const [validation, setValidation] = useState('');
   const { get, loading } = useFetch('http://api.openweathermap.org/data/2.5/');
   const [favorites, setFavorites] = useState(
@@ -22,15 +23,6 @@ export default function Weather() {
   const [currentPage, setCurrentPage] = useState('Nows');
   const [forecastList, setForecastList] = useState([]);
   const [imgUrl, setImgUrl] = useState(HeartSvg);
-  const API_KEY = '73b04f10a5d603d29c52ac0a00cc5625';
-
-  useEffect(() => {
-    console.log(weatherData);
-  }, [weatherData]);
-
-  useEffect(() => {
-    console.log(forecastList);
-  }, [forecastList]);
 
   useEffect(() => {
     localStorage.setItem('favoriteCities', JSON.stringify(favorites));
@@ -40,29 +32,10 @@ export default function Weather() {
     setCity(e.target.value);
   }
 
-  function fetchCityWeather(value) {
-    get(`weather?q=${value}&appid=${API_KEY}&units=metric`)
-      .then((data) => {
-        if (data) {
-          setWeatherData({
-            cityName: data.name,
-            cityTemperature: Math.round(data.main.temp),
-            icon: data.weather[0].icon,
-            feelsLike: Math.round(data.main.feels_like),
-            weather: data.weather[0].main,
-            sunrise: data.sys.sunrise,
-            sunset: data.sys.sunset,
-          });
-        }
-      })
-      .catch((error) => console.log(error));
-  }
-
   function fetchWeatherForecast() {
-    get(`forecast?q=${city}&appid=${API_KEY}&units=metric`)
+    get(`forecast?q=${city}&appid=${context.API_KEY}&units=metric`)
       .then((data) => {
         if (data) {
-          console.log(data.list);
           setForecastList(data.list);
         }
       })
@@ -76,25 +49,26 @@ export default function Weather() {
       setValidation('Please, enter the city');
       return;
     }
+    setValidation('');
 
-    fetchCityWeather(city);
+    context.fetchCityWeather(city);
     setImgUrl(HeartSvg);
   }
 
   function handleFavoriteAdd() {
-    if (!weatherData.cityName) {
+    if (!context.weatherData.cityName) {
       return;
     }
     const isFavorite =
       favorites.find(
-        (favorite) => favorite.cityName === weatherData.cityName
+        (favorite) => favorite.cityName === context.weatherData.cityName
       ) !== undefined;
     if (!isFavorite) {
       setFavorites([
         ...favorites,
         {
           id: Math.random(),
-          cityName: weatherData.cityName,
+          cityName: context.weatherData.cityName,
         },
       ]);
     }
@@ -106,8 +80,6 @@ export default function Weather() {
   }
 
   function handleForecastClick() {
-    console.log(city);
-
     if (!city) {
       return;
     }
@@ -123,9 +95,11 @@ export default function Weather() {
               onFormSubmit={handleFormSubmit}
               city={city}
               onCityChange={handleCityChange}
+              validation={validation}
             />
             <DateComponent />
           </div>
+          {validation && <div className="error">{validation}</div>}
           <div className="inner">
             <div className="columns__item">
               <div className="tabs">
@@ -133,21 +107,17 @@ export default function Weather() {
                   {currentPage === 'Nows' && (
                     <WeatherGeneralInfo
                       city={city}
-                      weatherData={weatherData}
                       onFavoriteAdd={handleFavoriteAdd}
                       heartIcon={imgUrl}
                       favorites={favorites}
                     />
                   )}
                 </div>
-                {currentPage === 'Details' && (
-                  <WeatherDetails weatherData={weatherData} />
-                )}
+                {currentPage === 'Details' && <WeatherDetails />}
                 {currentPage === 'Forecast' && (
                   <WeatherForecast
                     city={city}
                     forecastList={forecastList}
-                    weatherData={weatherData}
                     onFetchForecast={fetchWeatherForecast}
                   />
                 )}
@@ -163,7 +133,7 @@ export default function Weather() {
               onCityChange={setCity}
               favorites={favorites}
               onDelete={handleDeleteClick}
-              onFetch={fetchCityWeather}
+              onFetch={context.fetchCityWeather}
             />
           </div>
         </div>
@@ -171,3 +141,13 @@ export default function Weather() {
     </>
   );
 }
+
+function AppWrapper() {
+  return (
+    <AppProvider>
+      <Weather />
+    </AppProvider>
+  );
+}
+
+export default AppWrapper;
